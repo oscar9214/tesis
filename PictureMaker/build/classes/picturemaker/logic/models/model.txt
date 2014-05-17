@@ -1,0 +1,41 @@
+#PACKAGE: Familia
+
+#CLASS: Familia
+ATTRIBUTES
+nombre: RamirezGonzalez
+REFERENCES
+padre: Papa
+madre: Mama
+hijos: Hijo, Hijo
+
+#CLASS: Papa
+ATTRIBUTES
+nombres: Carlos
+apellidos: Ramirez
+edad: 50
+REFERENCES
+esposa: Mama
+
+#CLASS: Mama
+ATTRIBUTES
+nombres: Esperanza
+apellidos: Gonzalez
+edad: 50
+REFERENCES
+esposo: Papa
+
+#CLASS: Hijo
+ATTRIBUTES
+nombres: Paula
+apellidos: Ramirez
+edad: 16
+genero: F
+REFERENCES
+
+#CLASS: Hijo
+ATTRIBUTES
+nombres: Danilo
+apellidos: Ramirez
+edad: 22
+genero: M
+REFERENCES

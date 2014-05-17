@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="ASCII"?>
+<Model:Familia xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:Model="mdl.familia" nombre="RamirezGonzalez">
+  <padre esposa="//@madre" nombres="Carlos" apellidos="Ramirez" edad="50"/>
+  <madre esposo="//@padre" nombres="Esperanza" apellidos="Gonzalez" edad="50"/>
+  <hijos nombres="Paula" apellidos="Ramirez" edad="16" genero="F"/>
+  <hijos nombres="Danilo" apellidos="Ramirez" edad="22" genero="M"/>
+</Model:Familia>

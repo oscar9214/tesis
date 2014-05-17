@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
+  <display-name>PictureMaker</display-name>
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.htm</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>default.html</welcome-file>
+    <welcome-file>default.htm</welcome-file>
+    <welcome-file>default.jsp</welcome-file>
+  </welcome-file-list>
+  <servlet>
+    <description></description>
+    <display-name>PicServlet</display-name>
+    <servlet-name>PicServlet</servlet-name>
+    <servlet-class>picturemaker.logic.PicServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>PicServlet</servlet-name>
+    <url-pattern>/PicServlet</url-pattern>
+  </servlet-mapping>
+  <context-param>
+    <description>Location to store uploaded file</description>
+    <param-name>file-upload</param-name>
+    <param-value>
+  		static/
+  	</param-value>
+  </context-param>
+  <servlet>
+    <description></description>
+    <display-name>ClassesPanel</display-name>
+    <servlet-name>ClassesPanel</servlet-name>
+    <servlet-class>picturemaker.logic.ClassesPanel</servlet-class>
+    <init-param>
+      <description></description>
+      <param-name>ClassesPanel</param-name>
+      <param-value></param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ClassesPanel</servlet-name>
+    <url-pattern>/ClassesPanel</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>ClassesPanelServlet</display-name>
+    <servlet-name>ClassesPanelServlet</servlet-name>
+    <servlet-class>picturemaker.logic.ClassesPanelServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ClassesPanelServlet</servlet-name>
+    <url-pattern>/ClassesPanelServlet</url-pattern>
+  </servlet-mapping>
+</web-app>

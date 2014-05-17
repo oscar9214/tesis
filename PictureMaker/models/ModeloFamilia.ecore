@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="Familia" nsURI="mdl.familia" nsPrefix="Model">
+  <eClassifiers xsi:type="ecore:EClass" name="Familia">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="padre" lowerBound="1" eType="#//Papa"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="madre" lowerBound="1" eType="#//Mama"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="hijos" upperBound="-1"
+        eType="#//Hijo" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="nombre" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Papa">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="esposa" lowerBound="1"
+        eType="#//Mama"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="nombres" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="apellidos" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="edad" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Mama">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="esposo" eType="#//Papa"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="nombres" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="apellidos" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="edad" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Hijo">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="nombres" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="apellidos" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="edad" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="genero" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+</ecore:EPackage>

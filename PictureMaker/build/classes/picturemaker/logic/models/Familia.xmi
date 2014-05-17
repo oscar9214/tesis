@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="ASCII"?>
+<Model:Familia
+    xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:Model="mdl.familia"
+    xsi:schemaLocation="mdl.familia /Tarea1PGModelRW/models/ModeloFamilia.ecore"
+    nombre="RamirezGonzalez">
+  <padre esposa="//@madre"
+      nombres="Carlos"
+      apellidos="Ramirez"
+      edad="50"/>
+  <madre esposo="//@padre"
+      nombres="Esperanza"
+      apellidos="Gonzalez"
+      edad="50"/>
+  <hijos genero="F"
+      nombres="Paula"
+      apellidos="Ramirez"
+      edad="16"/>
+  <hijos genero="M"
+      nombres="Danilo"
+      apellidos="Ramirez"
+      edad="22"/>
+</Model:Familia>
