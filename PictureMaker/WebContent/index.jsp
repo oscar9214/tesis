@@ -40,7 +40,7 @@
 
           <div class="inner cover">
             <h3 class="cover-heading">Please upload the metamodel to start building your .picture file.</h3>
-              <form method="GET" class="text-cener" action="PicServlet" enctype="multipart/form-data"> 
+              <form method="POST" class="text-cener" action="PicServlet" enctype="multipart/form-data"> 
                 <input name="file" type="file" value=""/>
                 <button type="submit" class="btn btn-success center">Send</button>
 			  </form>

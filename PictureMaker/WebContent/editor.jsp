@@ -26,6 +26,21 @@
 	rel="stylesheet">
 
 <style>
+.table>thead>tr>th, .table>tbody>tr>th, .table>tfoot>tr>th, .table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td {
+	padding: 3px;
+	vertical-align: top;
+	border-top: 1px solid #ddd;
+}
+
+.table>tbody>tr>th, .table>tbody>tr>td{
+	background-color: #FFFFFF;
+}
+
+.custom-select {
+	width: 100%;
+	padding: 1px 20px;
+}
+
 #id-picture-file{
 	font-size: 14px;
 	font-family:"Lucida Console", Monaco, monospace;
@@ -46,6 +61,7 @@
 	width:300px;
 	border-radius:5px;
 	text-align: center;
+	position: relative;
 }
 
 .active-entity {
@@ -53,6 +69,19 @@
 	background-color: #428bca;
 	padding: 10px 15px;
 	display: block;
+	
+}
+
+.entity-elements-container {
+	margin-bottom: -7px;
+}
+
+.entity-attribute {
+	padding: 5px;
+}
+
+.entity-reference {
+	padding: 5px;
 }
 
 .entity {
@@ -62,6 +91,7 @@
 	border-bottom: 1px solid transparent;
 }
 
+
 .active-entity > a {
   color: #fff;
   background-color: #428bca;
@@ -70,6 +100,12 @@
 
 .entity > a {
   display: block;
+}
+
+.panel-group .panel {
+	margin-bottom: -7px;
+	border-radius: 4px;
+    overflow: hidden;
 }
 
 .active-figure {
@@ -96,9 +132,6 @@
   display: block;
 }
 
-.draggable {
-}
-
 .show-grid {
 	margin-bottom: 15px
 }
@@ -113,6 +146,9 @@
 .canvas {
 	background-color: #FFFFFF;
 	border: 1px solid rgba(86, 61, 124, .2);
+	padding-left: 30px;
+	padding-top: 30px;
+	padding-bottom: 30px;
 }
 
 .canvas-highlight {
@@ -144,7 +180,7 @@
 <style id="holderjs-style" type="text/css"></style>
 </head>
 
-<body>
+<body style="font-size: 12px;">
 
 	<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
 		<div class="container-fluid" style="background: #222">
@@ -164,6 +200,7 @@
 	
 	<div class="panel panel-default">
 	  <div class="panel-body">
+	  <div class="alert alert-info"></div>
 	    <div class="row show-grid">
 		<div class="col-md-2" style="background-color: #f5f5f5;">
 		<h2 class="sub-header">Entities</h2>
@@ -177,37 +214,52 @@
 							ArrayList<Entity> list = new ArrayList<Entity>();
 							//storing passed value from jsp
 							list = (ArrayList<Entity>)request.getAttribute("entities");
-							
-							// print the information about every category of the list
-							for(Entity entity : list) {
-							    out.println("<tr class=\"element-row\">");
-							    out.println("<td><div class=\"draggable ui-widget-content ui-draggable\" style=\"position: relative; z-index: 1000;\">");
-							    out.println("<p>"+entity.getName()+"</p>");
-							    out.println("<p>Attributes--------</p>");
-							    for (Attribute attribute : entity.getAttributes())
-							    out.println("<p>"+attribute.name+"</p>");
-							    for (Reference reference : entity.getReferences())
-								out.println("<p>"+reference.name+"</p>");
-							    out.println("</div></td>");
-							    out.println("</tr>");				
+							if (list!=null){
+								// print the information about every category of the list
+								out.println("<div class=\"panel-group\" id=\"accordion\">");
+								for( int i = 0 ; i < list.size(); i++) {
+									Entity entity = list.get(i);
+									out.println("<div class=\"entity-elements-container panel panel-default\">");
+									out.println("<div id=\"id-entity-"+i+"\" class=\""+((i==0)?"active-entity":"entity")+"\">");
+									out.println("<a onclick=\"select_entity("+i+")\" data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#collapse"+i+"\" class=\"\">"+((i==0)?"<span class=\"glyphicon glyphicon-ok\">&nbsp</span>":"")+"<span class=\"entity-name\">"+entity.name+"</span></a>");
+									out.println("</div>");
+									out.println("<div id=\"collapse"+i+"\" class=\"panel-collapse collapse\" style=\"height: auto;\">");
+									out.println("<div class=\"panel-body\">");
+									out.println("<p><span class=\"glyphicon glyphicon-th-list\"></span>Attributes</p>");
+									out.println("<div class=\"list-group\">");							          
+									for (Attribute attribute : entity.getAttributes()){
+										out.println("<span class=\"entity-attribute list-group-item list-group-item-info\">"+attribute.name+"</span>");
+									}
+									out.println("</div>");
+									out.println("<p><span class=\"glyphicon glyphicon-resize-small\"></span>References</p>");
+									out.println("<div class=\"list-group\">");
+									for (Reference reference : entity.getReferences()){
+										out.println("<span class=\"entity-reference list-group-item list-group-item-info\">"+reference.name+"</span>");
+									}
+									out.println("</div>");
+									out.println("</div>");
+									out.println("</div>");
+									out.println("</div>");									
+								}
+								out.println("</div>");
 							}
+							
 					%>
-
 				</tbody>
 			</table>
 		</div>
-		<div class="col-md-6">
+		<div class="col-md-5">
 			<h2 class="sub-header">Figure</h2>
 			<h3 id="id-selected-name"></h3>
-			<div id="id-figure-container" class="canvas" style="height: 500px;">
-				<div id="id-figure" class="draggable">
+			<div id="id-figure-container" class="canvas">
+				<div id="id-figure">
 					<div id="id-figure-label" class="figure-label">
 						elementName
 					</div>
 				</div>	
 			</div>
 		</div>
-		<div class="col-md-4" style="background-color: #f5f5f5;">
+		<div class="col-md-5" style="background-color: #f5f5f5;">
 			<button type="button" class="btn btn-success pull-right" onclick="save_current_entity();">Save</button>
 			<h2 class="sub-header">Properties</h2>
 			<div class="table-responsive">
@@ -296,7 +348,7 @@
 					'complex': 5
 			};
 			
-			function setup_entities () {
+			function setup_fake_entities () {
 				for (var i = 0; i < 5; i++){
 					var icon_properties = {
 							path: '',
@@ -331,12 +383,65 @@
 				select_entity(0);
 			};
 			
+			function create_entity(name, attributes, references){
+				var icon_properties = {
+						path: '',
+						size: ['',''],
+						position: [15,15]
+				};
+				
+				var rounded = {
+						id: 0,
+						radios: ['',''],
+						background_color: '#dddddd',
+						border: 'solid',
+						icon: icon_properties
+				};
+				
+				var graphical_properties_rounded = {
+						label_icon: 'false',
+						label_placement: 'internal',
+						size: ['',''],
+						figure: rounded,
+						phantom: 'false'
+				};
+								
+				var entityObject = {
+						name: name, 
+						attributes: attributes,
+						references: references,
+						graphical_properties: graphical_properties_rounded
+						};
+				entities.push(entityObject);
+				add_to_file(entityObject);
+			};
+			
+			function setup_entities () {
+				$('.entity-elements-container').each(function(i, object)
+				{
+					var name = $(this).find('.entity-name').html();
+					var attributes = [];
+					var references = [];
+					$(this).find('.entity-attribute').each(function(i, object){
+						attributes.push($(this).html());
+					});
+					$(this).find('.entity-reference').each(function(i, object){
+						references.push($(this).html());
+					});
+					create_entity(name, attributes, references);							    
+				});
+					
+				select_entity(0);
+			};
+					
+			
+			
 			function setup_html_entities (){
 				var html_for_entities = '<div class="panel-group" id="accordion">';
 				for (var i = 0; i < entities.length; i++){
 					var attributes = entities[i]['attributes'];
 					var references = entities[i]['references'];
-					html_for_entities += '<div class="panel panel-default">';
+					html_for_entities += '<div class="panel panel-default entity-elements-container">';
 					html_for_entities += '<div id="id-entity-'+i+'" class="'+((i==0)?'active-entity':'entity')+'">';
 					html_for_entities += '<a onclick="select_entity('+i+')" data-toggle="collapse" data-parent="#accordion" href="#collapse'+i+'" class="">'+((i==0)?'<span class="glyphicon glyphicon-ok">&nbsp</span>':'')+entities[i]['name']+'</a>';
 					html_for_entities += ('</div>');
@@ -449,7 +554,7 @@
 				response += '<tr>';
 				response += '<td>Border</td>';
 				response += '<td>';
-				response += '<select class="input-sm" id="id-figure-border">';
+				response += '<select class="custom-select" id="id-figure-border">';
 				response += '<option value="solid">Solid</option>';
 				response += '<option value="dash">Dash</option>';
 				response += '<option value="dot">Dot</option>';
@@ -491,7 +596,7 @@
 				
 				html_for_entities += '<tr>';
 				html_for_entities += '<td>Label icon</td>';
-				html_for_entities += '<td><select class="input-sm" id="id-label-icon-select">';
+				html_for_entities += '<td><select class="custom-select" id="id-label-icon-select">';
 				html_for_entities += '<option value="false">False</option>';
 				html_for_entities += '<option value="true">True</option>';
 				html_for_entities += '</select></td>';
@@ -499,7 +604,7 @@
 				
 				html_for_entities += '<tr>';
 				html_for_entities += '<td>Label placement</td>';
-				html_for_entities += '<td><select class="input-sm" id="id-label-icon-plac-select">';
+				html_for_entities += '<td><select class="custom-select" id="id-label-icon-plac-select">';
 				html_for_entities += '<option value="internal">Internal</option>';
 				html_for_entities += '<option value="external">External</option>';
 				html_for_entities += '</select></td>';
@@ -516,7 +621,7 @@
 				html_for_entities += '<td>';
 				html_for_entities += '<div class="panel-group" id="id-figure-type">';
 				//Rounded
-				html_for_entities += '<div class="panel panel-default" id="id-figure-type-container-0">';
+				html_for_entities += '<div class="panel panel-default figure-elements.container" id="id-figure-type-container-0">';
 				html_for_entities += '<div id="id-figure-type-0" class="active-figure">';
 				html_for_entities += '<a onclick="select_figure(0)" data-toggle="collapse" data-parent="#id-figure-type" href="#collapse-rounded"><span class="glyphicon glyphicon-ok">&nbsp</span>Rounded</a>';
 				html_for_entities += '</div>';
@@ -532,7 +637,7 @@
 				html_for_entities += '</table>';
 				html_for_entities += '</div></div></div>';
 				//Regular polygon
-				html_for_entities += '<div class="panel panel-default" id="id-figure-type-container-1">';
+				html_for_entities += '<div class="panel panel-default figure-elements.container" id="id-figure-type-container-1">';
 				html_for_entities += '<div id="id-figure-type-1" class="figure">';
 				html_for_entities += '<a onclick="select_figure(1)" data-toggle="collapse" data-parent="#id-figure-type" href="#collapse-polygon">Regular polygon</a>';
 				html_for_entities += '</div>';
@@ -548,7 +653,7 @@
 				html_for_entities += '</table>';
 				html_for_entities += '</div></div></div>';
 				//Ellipse
-				html_for_entities += '<div class="panel panel-default" id="id-figure-type-container-2">';
+				html_for_entities += '<div class="panel panel-default figure-elements.container" id="id-figure-type-container-2">';
 				html_for_entities += '<div id="id-figure-type-2" class="figure">';
 				html_for_entities += '<a onclick="select_figure(2)" data-toggle="collapse" data-parent="#id-figure-type" href="#collapse-ellipse">Ellipse</a>';
 				html_for_entities += '</div>';
@@ -564,7 +669,7 @@
 				html_for_entities += '</table>';
 				html_for_entities += '</div></div></div>';
 				//Custom Figure
-				html_for_entities += '<div class="panel panel-default" id="id-figure-type-container-3">';
+				html_for_entities += '<div class="panel panel-default figure-elements.container" id="id-figure-type-container-3">';
 				html_for_entities += '<div id="id-figure-type-3" class="figure">';
 				html_for_entities += '<a onclick="select_figure(3)" data-toggle="collapse" data-parent="#id-figure-type" href="#collapse-custom">Custom</a>';
 				html_for_entities += '</div>';
@@ -580,7 +685,7 @@
 				html_for_entities += '</table>';
 				html_for_entities += '</div></div></div>';
 				//Image
-				html_for_entities += '<div class="panel panel-default" id="id-figure-type-container-4">';
+				html_for_entities += '<div class="panel panel-default figure-elements.container" id="id-figure-type-container-4">';
 				html_for_entities += '<div id="id-figure-type-4" class="figure">';
 				html_for_entities += '<a onclick="select_figure(4)" data-toggle="collapse" data-parent="#id-figure-type" href="#collapse-image">Image</a>';
 				html_for_entities += '</div>';
@@ -594,7 +699,7 @@
 				html_for_entities += '</table>';
 				html_for_entities += '</div></div></div>';
 				//Complex
-				html_for_entities += '<div class="panel panel-default" id="id-figure-type-container-5">';
+				html_for_entities += '<div class="panel panel-default figure-elements-container" id="id-figure-type-container-5">';
 				html_for_entities += '<div id="id-figure-type-5" class="figure">';
 				html_for_entities += '<a onclick="select_figure(5)" data-toggle="collapse" data-parent="#id-figure-type" href="#collapse-complex">Complex</a>';
 				html_for_entities += '</div>';
@@ -608,7 +713,7 @@
 				
 				html_for_entities += '<tr>';
 				html_for_entities += '<td>Phantom</td>';
-				html_for_entities += '<td><select class="input-sm" id="id-figure-phantom">';
+				html_for_entities += '<td><select class="custom-select" id="id-figure-phantom">';
 				html_for_entities += '<option value="false">False</option>';
 				html_for_entities += '<option value="true">True</option>';
 				html_for_entities += '</select></td>';
@@ -620,7 +725,7 @@
 			
 			function select_entity(position){
 				setup_style_definition();
-				$('.active-entity').find('a').find('span').remove();
+				$('.active-entity').find('a').find('.glyphicon').remove();
 				$('.active-entity').addClass('entity').removeClass('active-entity');
 				$('#id-entity-'+position).removeClass('entity').addClass('active-entity');
 				$('.active-entity').find('a').prepend('<span class="glyphicon glyphicon-ok">&nbsp</span>');
@@ -684,6 +789,7 @@
 			};
 			
 			function save_current_entity(){
+				$('.alert').val('Saving...').fadeIn('slow');
 				var icon_properties = null;
 				
 				if ($('#id-icon-checkbox').prop('checked')){
@@ -752,6 +858,8 @@
 				};
 				
 				selected_entity['graphical_properties'] = graphical_properties_temp;
+				
+				$('.alert').fadeOut('slow');
 			};
 			
 			function select_figure(position){
@@ -773,10 +881,7 @@
 			};
 		
 		$(document).ready(function (){
-			setup_entities();
-			setup_html_entities();
-			setup_style_definition();
-			setup_picture_file_content();
+			setup_project();
 			$('#id-icon-checkbox').click(function() {
 			    var $this = $(this);
 			    if ($this.is(':checked')) {
@@ -787,6 +892,13 @@
 			});
 		}
 		);
+		
+		function setup_project(){
+			setup_entities();
+			//setup_html_entities();
+			setup_style_definition();
+			setup_picture_file_content();
+		};
 		
 		function unbind_icon_checkbox(state) {
 			if (state){
@@ -799,10 +911,7 @@
 			}
 		};
 				
-		$(function() {
-		    $( ".draggable" ).draggable({ revert: "invalid" });
-		    $( ".canvas" ).droppable({ });
-		  });
+		
 		
 	</script>
 
