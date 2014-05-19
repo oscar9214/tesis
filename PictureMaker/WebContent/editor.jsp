@@ -183,15 +183,12 @@
 <body style="font-size: 12px;">
 
 	<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-		<div class="container-fluid" style="background: #222">
+		<div class="container-fluid" style="background: #222; padding-top: 8px;">
+		<button type="button" class="btn btn-success pull-right" onclick="download_picture_file();"><span class="glyphicon glyphicon-floppy-save"></span>&nbspDownload File</button>
 			<div class="navbar-header">
-				<button type="button" class="navbar-toggle button"
-					data-toggle="collapse" data-target=".navbar-collapse">
-					<span class="sr-only">Toggle navigation</span> <span
-						class="icon-bar"></span> <span class="icon-bar"></span> <span
-						class="icon-bar"></span>
-				</button>
-				<a class="navbar-brand" href="#">Project name</a>
+				
+				
+				<% out.println("<h4 style=\"color: #FFFFFF;\">" + request.getAttribute("fileName") + "</h4>");%>
 
 			</div>
 			<div class="navbar-collapse collapse"></div>
@@ -200,7 +197,7 @@
 	
 	<div class="panel panel-default">
 	  <div class="panel-body">
-	  <div class="alert alert-info"></div>
+	  <div class="alert alert-info text-center" style="display: none;"></div>
 	    <div class="row show-grid">
 		<div class="col-md-2" style="background-color: #f5f5f5;">
 		<h2 class="sub-header">Entities</h2>
@@ -263,7 +260,7 @@
 			<button type="button" class="btn btn-success pull-right" onclick="save_current_entity();">Save</button>
 			<h2 class="sub-header">Properties</h2>
 			<div class="table-responsive">
-				<table class="table">
+				<table class="table table-bordered">
 					<thead>
 						<tr>
 							<th>Property</th>
@@ -277,7 +274,9 @@
 			</div>
 		</div>
 	  </div>
-	  <div class="panel-footer"><h2 class="sub-header">Picture File</h2>
+	  <div class="panel-footer">
+	  
+	  <h2 class="sub-header">Picture File</h2>
 	  	<p>
 	  	
 	  		<div id="id-picture-file">
@@ -571,7 +570,7 @@
 				response += '<input id="id-icon-checkbox" type="checkbox" checked> <span id="id-icon-checkbox-label">Selected';
 				response += '</label>';
 				response += '</div>';
-			    response += '<table class="table" id="id-icon-table-properties">';
+			    response += '<table class="table table-bordered" id="id-icon-table-properties">';
 				response += '<thead><tr><th>Property</th><th>Value</th></tr></thead>';
 				response += '<tbody id="id-properties-container-icon-'+type+'">';
 				response += '<tr><td>Path</td><td><input type="file" name=""></td></tr>';
@@ -627,7 +626,7 @@
 				html_for_entities += '</div>';
 				html_for_entities += '<div id="collapse-rounded" class="panel-collapse collapse" style="height: auto;">';
 				html_for_entities += '<div class="panel-body">';
-				html_for_entities += '<table class="table">';
+				html_for_entities += '<table class="table table-bordered">';
 				html_for_entities += '<thead><tr><th>Property</th><th>Value</th></tr></thead>';
 				html_for_entities += '<tbody id="id-properties-container-rounded">';
 				html_for_entities += '<tr><td>Size</td><td><input id="id-rounded-xradio" type="number" min="1" max="1000000" class="" placeholder="X Radio">';
@@ -643,7 +642,7 @@
 				html_for_entities += '</div>';
 				html_for_entities += '<div id="collapse-polygon" class="panel-collapse collapse" style="height: auto;">';
 				html_for_entities += '<div class="panel-body">';
-				html_for_entities += '<table class="table">';
+				html_for_entities += '<table class="table table-bordered">';
 				html_for_entities += '<thead><tr><th>Property</th><th>Value</th></tr></thead>';
 				html_for_entities += '<tbody id="id-properties-container-polygon">';
 				html_for_entities += '<tr><td>Vertex quantity</td><td><input id="id-polygon-vertex-qty" type="number" min="1" max="1000000" class="" placeholder="#"></td></tr>';
@@ -659,7 +658,7 @@
 				html_for_entities += '</div>';
 				html_for_entities += '<div id="collapse-ellipse" class="panel-collapse collapse" style="height: auto;">';
 				html_for_entities += '<div class="panel-body">';
-				html_for_entities += '<table class="table">';
+				html_for_entities += '<table class="table table-bordered">';
 				html_for_entities += '<thead><tr><th>Property</th><th>Value</th></tr></thead>';
 				html_for_entities += '<tbody id="id-properties-container-ellipse">';
 				html_for_entities += '<tr><td>Size</td><td><input id="id-ellipse-xradio" type="number" min="1" max="1000000" class="" placeholder="X Radio">';
@@ -675,7 +674,7 @@
 				html_for_entities += '</div>';
 				html_for_entities += '<div id="collapse-custom" class="panel-collapse collapse" style="height: auto;">';
 				html_for_entities += '<div class="panel-body">';
-				html_for_entities += '<table class="table">';
+				html_for_entities += '<table class="table table-bordered">';
 				html_for_entities += '<thead><tr><th>Property</th><th>Value</th></tr></thead>';
 				html_for_entities += '<tbody id="id-properties-container-custom">';
 				html_for_entities += '<tr><td>Points <button class="btn btn-info btn-xs">+</button></td><td><div id="id-points-container"><input type="number" min="1" max="1000000" class="pointx" placeholder="X">';
@@ -691,7 +690,7 @@
 				html_for_entities += '</div>';
 				html_for_entities += '<div id="collapse-image" class="panel-collapse collapse" style="height: auto;">';
 				html_for_entities += '<div class="panel-body">';
-				html_for_entities += '<table class="table">';
+				html_for_entities += '<table class="table table-bordered">';
 				html_for_entities += '<thead><tr><th>Property</th><th>Value</th></tr></thead>';
 				html_for_entities += '<tbody id="id-properties-container-image">';
 				html_for_entities += '<tr><td>File</td><td><input type="file"></td></tr>';
@@ -789,7 +788,7 @@
 			};
 			
 			function save_current_entity(){
-				$('.alert').val('Saving...').fadeIn('slow');
+				$('.alert').html('<h4>Saving...</h4>').fadeIn('slow');
 				var icon_properties = null;
 				
 				if ($('#id-icon-checkbox').prop('checked')){
@@ -910,7 +909,10 @@
 		    	$('#id-icon-table-properties').fadeOut('slow');
 			}
 		};
-				
+		
+		function render_entity(entity){
+										
+		};
 		
 		
 	</script>
