@@ -188,7 +188,7 @@
 			<div class="navbar-header">
 				
 				
-				<% out.println("<h4 style=\"color: #FFFFFF;\">" + request.getAttribute("fileName") + "</h4>");%>
+				<% out.println("<h4 style=\"color: #FFFFFF;\" id=\"id-filename\">" + request.getAttribute("fileName") + "</h4>");%>
 
 			</div>
 			<div class="navbar-collapse collapse"></div>
@@ -281,39 +281,39 @@
 	  	
 	  		<div id="id-picture-file">
 	  			<div id="id-file-header">
-	  				<br>import "/model/bpmn2.ecore"
-	  				<br>as MM
-	  				<br>Graphical representation BPMN {
-	  				<br>&emsp;reference package bpmn
-	  				<br>&emsp;root MacroProcess
+	  				<br><span class="file-line">import "/model/bpmn2.ecore"</span>
+	  				<br><span class="file-line">as MM</span>
+	  				<br><span class="file-line">Graphical representation BPMN {</span>
+	  				<br><span class="file-line">&emsp;reference package bpmn</span>
+	  				<br><span class="file-line">&emsp;root MacroProcess</span>
 				</div>
 				<div id="id-file-palette">
-					&emsp;Palette for MacroProcess{
+					<span class="file-line">&emsp;Palette for MacroProcess{</span>
 					<br>&emsp;&nbsp;
 					<br><div class="file-section-container"></div>
-					<br>&emsp;}
+					<br><span class="file-line">&emsp;}</span>
 				</div>
 				<div id="id-file-style">
-					&emsp;Style definition {
+					<span class="file-line">&emsp;Style definition {</span>
 					<br>&emsp;&nbsp;
-					<br>&emsp;} 
+					<br><span class="file-line">&emsp;} </span>
 				</div>
 				<div id="id-file-graphical">
-					&emsp;Graphical definition {
+					<span class="file-line">&emsp;Graphical definition {</span>
 					<br>&emsp;&nbsp;
 					<div class="file-section-container"></div>
-					<br>&emsp;}
+					<br><span class="file-line">&emsp;}</span>
 				</div><div id="id-file-rules">
-					&emsp;Rules definition {
+					<span class="file-line">&emsp;Rules definition {</span>
 					<br>&emsp;&nbsp;
-					<br>&emsp;}
+					<br><span class="file-line">&emsp;}</span>
 				</div>
 				<div id="id-file-interaction">
-					&emsp;Interaction definition {
+					<span class="file-line">&emsp;Interaction definition {</span>
 					<br>&emsp;&nbsp;
-					<br>&emsp;}
+					<br><span class="file-line">&emsp;}</span>
 				</div><div id="id-file-footer">
-					}
+					<span class="file-line">}</span>
 				</div>
 			</div>
 	  	</p>
@@ -331,6 +331,8 @@
 	<script src="static/js/jquery-ui-1.10.4.custom.js"
 		language="javascript" type="text/javascript"></script>
 	<script src="static/js/jquery-ui-1.10.4.custom.min.js"
+		language="javascript" type="text/javascript"></script>
+	<script src="static/js/file-saver/FileSaver.js"
 		language="javascript" type="text/javascript"></script>
 	<script language="javascript" type="text/javascript">
 								   
@@ -464,52 +466,54 @@
 			};
 			
 			function add_to_palette(entity){
-				var indent = '<br>&emsp;&emsp;';
+				var indent = '<br>&emsp;&emsp;<span class="file-line">';
+				var line_class_close = '</span>';
 				var container = $('#id-file-palette').find('.file-section-container');
 				var html = '';
-				html += indent + 'Creation button for class '+entity['name']+' {';
-				html += indent + 'name "'+entity['name']+'"';
-				html += indent + 'description "Description of '+entity['name']+'"';
-				html += indent + 'icon "/imagenes/NodeIcon.gif"';
-				html += indent + '}';
+				html += indent + 'Creation button for class '+entity['name']+' {' + line_class_close;
+				html += indent + 'name "'+entity['name']+'"' + line_class_close;
+				html += indent + 'description "Description of '+entity['name']+'"' + line_class_close;
+				html += indent + 'icon "/imagenes/NodeIcon.gif"' + line_class_close;
+				html += indent + '}' + line_class_close;
 				container.append(html);			
 			};
 			
 			function add_to_graphical_definition(entity){
-				var indent = '<br>&emsp;&emsp;';
+				var indent = '<br>&emsp;&emsp;<span class="file-line">';
+				var line_class_close = '</span>';
 				var container = $('#id-file-graphical').find('.file-section-container');
 				var html = '';
-				html += indent + 'Node_element '+entity['name']+'Definition';
-				html += indent + 'for class '+entity['name']+' {';
-				html += indent + 'label elementName"';
-				html += indent + 'label icon '+entity['graphical_properties']['label_icon']+'';
-				html += indent + 'label placement '+entity['graphical_properties']['label_placement']+'';
-				html += indent + 'size ( '+entity['graphical_properties']['size'][0]+' ,  '+entity['graphical_properties']['size'][1]+' )';
+				html += indent + 'Node_element '+entity['name']+'Definition' + line_class_close;
+				html += indent + 'for class '+entity['name']+' {' + line_class_close;
+				html += indent + 'label elementName"' + line_class_close;
+				html += indent + 'label icon '+entity['graphical_properties']['label_icon']+'' + line_class_close;
+				html += indent + 'label placement '+entity['graphical_properties']['label_placement']+'' + line_class_close;
+				html += indent + 'size ( '+entity['graphical_properties']['size'][0]+' ,  '+entity['graphical_properties']['size'][1]+' )' + line_class_close;
 				
-				var figure_id = entity['graphical_properties']['figure']['id'];
+				var figure_id = entity['graphical_properties']['figure']['id'] + line_class_close;
 				
-				html += indent + 'size ( '+entity['graphical_properties']['size'][0]+' ,  '+entity['graphical_properties']['size'][1]+' )';
+				html += indent + 'size ( '+entity['graphical_properties']['size'][0]+' ,  '+entity['graphical_properties']['size'][1]+' )' + line_class_close;
 								
 				if(figure_id == figure_constants['image']){
-					html += indent + 'Image figure{';
-					html += indent + 'image path "figure_path.svg"';
-					html += indent + '}';
-					//$('#').val();
-					//figure_properties['image_path'] = '';
+					html += indent + 'Image figure{' + line_class_close;
+					html += indent + 'image path "figure_path.svg"' + line_class_close;
+					html += indent + '}' + line_class_close;
+					//$('#').val() + line_class_close;
+					//figure_properties['image_path'] = '' + line_class_close;
 				}
 				else if(figure_id == figure_constants['complex']){
-					html += indent + 'Complex figure{';
-					html += indent + '---';
-					html += indent + '}';
+					html += indent + 'Complex figure{' + line_class_close;
+					html += indent + '---' + line_class_close;
+					html += indent + '}' + line_class_close;
 				}
 				else{
-					html += indent + 'Regular figure extends rounded{';
-					html += indent + 'backgroud color '+entity['graphical_properties']['figure']['background_color']+'';
-					html += indent + 'border '+entity['graphical_properties']['figure']['border']+'';
+					html += indent + 'Regular figure extends rounded{' + line_class_close;
+					html += indent + 'backgroud color '+entity['graphical_properties']['figure']['background_color']+'' + line_class_close;
+					html += indent + 'border '+entity['graphical_properties']['figure']['border']+'' + line_class_close;
 					if (entity['graphical_properties']['figure']['icon']!=null){
-						html += indent + 'icon path '+entity['graphical_properties']['figure']['icon']['path']+'';
-						html += indent + 'icon path '+entity['graphical_properties']['figure']['icon']['size']+'';
-						html += indent + 'icon path '+entity['graphical_properties']['figure']['icon']['position']+'';
+						html += indent + 'icon path '+entity['graphical_properties']['figure']['icon']['path']+'' + line_class_close;
+						html += indent + 'icon path '+entity['graphical_properties']['figure']['icon']['size']+'' + line_class_close;
+						html += indent + 'icon path '+entity['graphical_properties']['figure']['icon']['position']+'' + line_class_close;
 					}
 					if(figure_id == figure_constants['rounded']){
 						//PALETTE 					
@@ -524,8 +528,8 @@
 						//PALETTE 
 					}
 				}				
-				html += indent + 'phantom '+entity['graphical_properties']['phantom']+'';
-				html += indent + '}';
+				html += indent + 'phantom '+entity['graphical_properties']['phantom']+'' + line_class_close;
+				html += indent + '}' + line_class_close;
 				container.append(html);			
 			};
 			
@@ -910,8 +914,21 @@
 			}
 		};
 		
-		function render_entity(entity){
-										
+		function render_entity(entity){};
+		
+		function get_file_content_plain_text(){
+			var file_content = '';
+			$('#id-picture-file').children().each(function(i, object){
+				$(this).find('.file-line').each(function(i, object){
+					file_content += $(this).text() + '\r\n';
+				});
+			});
+			return file_content;
+		};
+		
+		function download_picture_file(){
+			var blob = new Blob([get_file_content_plain_text()], {type: "text/plain;charset=utf-8"});
+			saveAs(blob, "graphical_" + $('#id-filename').text().split(".")[0] + ".picture");
 		};
 		
 		
