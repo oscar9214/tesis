@@ -26,6 +26,11 @@
 	rel="stylesheet">
 
 <style>
+#id-div-entities{
+    height: 400px;
+    overflow-y: scroll;
+}
+
 .table>thead>tr>th, .table>tbody>tr>th, .table>tfoot>tr>th, .table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td {
 	padding: 3px;
 	vertical-align: top;
@@ -184,7 +189,6 @@
 
 	<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
 		<div class="container-fluid" style="background: #222; padding-top: 8px;">
-		<button type="button" class="btn btn-success pull-right" onclick="generate_styles_in_file();"><span class="glyphicon glyphicon-floppy-save"></span>&nbspGenerate Styles</button>	
 		<button type="button" class="btn btn-success pull-right" onclick="download_picture_file();"><span class="glyphicon glyphicon-floppy-save"></span>&nbspDownload File</button>
 			<div class="navbar-header">
 				
@@ -200,7 +204,7 @@
 	  <div class="panel-body">
 	  <div class="alert alert-info text-center" style="display: none;"></div>
 	    <div class="row show-grid">
-		<div class="col-md-2" style="background-color: #f5f5f5;">
+		<div class="col-md-2" style="background-color: #f5f5f5;" id="id-div-entities">
 		<h2 class="sub-header">Entities</h2>
 			<table class="table" style="border-collapse: collapse;">
 
@@ -321,9 +325,41 @@
 	  	</p>
 	  </div>
 	</div>
-	
-	
 	</div>
+
+<div  class="modal fade" id="id-modal-main-entity" data-backdrop="static">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Select main entity</h3>
+      </div>
+      <div class="modal-body">
+        <p>Please select the entity of your metamodel which will be the canvas that will contain all the other entities</p>
+      </div>
+      <select class="custom-select" id="id-figure-border">
+      	<%
+			// retrieve your list from the request, with casting 
+				list = new ArrayList<Entity>();
+				//storing passed value from jsp
+				list = (ArrayList<Entity>)request.getAttribute("entities");
+				if (list!=null){
+					// print the information about every category of the list					
+					for( int i = 0 ; i < list.size(); i++) {
+						Entity entity = list.get(i);
+						out.println("<option value=\""+entity.name+"\">"+entity.name+"</option>");						
+					}					
+				}				
+		%>			
+		</select>
+      <div class="modal-footer">
+        <button id="id-button-create-student" class="yc-button yc-bluebutton"
+                    onclick="select_main_entity();">OK</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+	
 
 	<!-- Bootstrap core JavaScript
     ================================================== -->

@@ -10,110 +10,48 @@ var figure_constants = {
 		'image': 4,
 		'complex': 5
 };
-
 var colors_container = {};
 var figure_style_container = {};
 var line_type_container = {};
 var line_decoration_container = {};
+var line_style_container = {};
 
-function hexToRgb(hex) {
-    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result ? {
-        r: parseInt(result[1], 16),
-        g: parseInt(result[2], 16),
-        b: parseInt(result[3], 16)
-    } : null;
-};
-
-function file_create_color (object){
-
-};
-
-function create_entity(name, attributes, references){
-	var icon_properties = {
-			path: '',
-			size: ['',''],
-			position: ['15','15']
-	};
-	var default_color = '#dddddd';
-
-	var border = {
-		width: '2',
-		type: 'solid',
-		color: default_color
-	};
-	
-	var rounded = {
-			id: 0,
-			radios: ['5','5'],
-			background_color: default_color,
-			border: 'solid',
-			icon: icon_properties
-	};
-	colors_container['#dddddd'] = hexToRgb(default_color);
-	
-	var graphical_properties_rounded = {
-			label_icon: 'false',
-			label_placement: 'internal',
-			size: ['',''],
-			figure: rounded,
-			phantom: 'false'
-	};
-					
-	var entityObject = {
-			name: name, 
-			attributes: attributes,
-			references: references,
-			graphical_properties: graphical_properties_rounded
-			};
-	entities.push(entityObject);
-	add_to_file(entityObject);
-};
-
-function setup_entities () {
-	$('.entity-elements-container').each(function(i, object)
-	{
-		var name = $(this).find('.entity-name').html();
-		var attributes = [];
-		var references = [];
-		$(this).find('.entity-attribute').each(function(i, object){
-			attributes.push($(this).html());
-		});
-		$(this).find('.entity-reference').each(function(i, object){
-			references.push($(this).html());
-		});
-		create_entity(name, attributes, references);							    
+$(document).ready(function (){
+	setup_project();
+	$('#id-icon-checkbox').click(function() {
+    var $this = $(this);
+    if ($this.is(':checked')) {
+	    	unbind_icon_checkbox(true);
+	    } else {
+	    	unbind_icon_checkbox(false);
+	    }
 	});
-		
-	select_entity(0);
+	$('#id-modal-main-entity').modal('toggle');
+});
+
+function setup_project(){
+	setup_entities();
+	//setup_html_entities();
+	setup_style_definition();
+	setup_picture_file_content();
+	load_entity_properties();
 };
 
-function setup_html_entities (){
-	var html_for_entities = '<div class="panel-group" id="accordion">';
-	for (var i = 0; i < entities.length; i++){
-		var attributes = entities[i]['attributes'];
-		var references = entities[i]['references'];
-		html_for_entities += '<div class="panel panel-default entity-elements-container">';
-		html_for_entities += '<div id="id-entity-'+i+'" class="'+((i==0)?'active-entity':'entity')+'">';
-		html_for_entities += '<a onclick="select_entity('+i+')" data-toggle="collapse" data-parent="#accordion" href="#collapse'+i+'" class="">'+((i==0)?'<span class="glyphicon glyphicon-ok">&nbsp</span>':'')+entities[i]['name']+'</a>';
-		html_for_entities += ('</div>');
-		html_for_entities += '<div id="collapse'+i+'" class="panel-collapse collapse" style="height: auto;">';
-		html_for_entities += '<div class="panel-body">';
-		html_for_entities += ('<p>Attributes--------</p>');
-		for (var j = 0; j < attributes.length; j++){
-			html_for_entities += ('<p>'+attributes[j]+'</p>');
-		}
-		html_for_entities += ('<p>References--------</p>');
-		for (var j = 0; j < references.length; j++){
-			html_for_entities += ('<p>'+references[j]+'</p>');
-		}
-		html_for_entities += ('</div>');
-		html_for_entities += ('</div>');
-		html_for_entities += ('</div>');
-		add_to_file(entities[i]);
-	}
-	html_for_entities += ('</div>');
-	$('#id-entities-container').html(html_for_entities);				
+
+//--------------------------File Writer and download-----------
+
+function setup_picture_file_content(){
+	var break_line = '\n';
+	var content = 'import "/model/bpmn2.ecore"';
+	content += break_line + 'as MM';
+	content += break_line + 'Graphical representation BPMN {';
+	
+	$('#id-picture-file').val(content);
+};
+
+function add_to_file(entity){
+	add_to_palette(entity);
+	add_to_graphical_definition(entity);
 };
 
 function add_to_palette(entity){
@@ -163,9 +101,10 @@ function add_to_graphical_definition(entity){
 		html += indent + 'Regular figure extends rounded{' + line_class_close;
 		var color_index = Object.keys(colors_container).indexOf(entity['graphical_properties']['figure']['background_color']);
 		html += indent + 'backgroud color color'+ color_index + line_class_close;
-		html += indent + 'border '+entity['graphical_properties']['figure']['border']+'' + line_class_close;
+		var border_index = Object.keys(line_style_container).indexOf(entity['graphical_properties']['figure']['border']);
+		html += indent + 'border LineStyle'+border_index+'' + line_class_close;
 		if (entity['graphical_properties']['figure']['icon']!=null){
-			html += indent + 'icon path '+entity['graphical_properties']['figure']['icon']['path']+'' + line_class_close;
+			html += indent + 'icon path "'+entity['graphical_properties']['figure']['icon']['path']+'"' + line_class_close;
 			html += indent + 'icon size '+entity['graphical_properties']['figure']['icon']['size']+'' + line_class_close;
 			html += indent + 'icon position Point( '+entity['graphical_properties']['figure']['icon']['position'][0]+" ,  "+entity['graphical_properties']['figure']['icon']['position'][1]+' )' + line_class_close;
 		}
@@ -196,9 +135,125 @@ function add_to_graphical_definition(entity){
 	container.append(html);			
 };
 
-function add_to_file(entity){
-	add_to_palette(entity);
-	add_to_graphical_definition(entity);
+function add_style_definition_to_file (){
+	var indent = '<br>&emsp;&emsp;<span class="file-line">';
+	var line_class_close = '</span>';
+	var container = $('#id-file-style').find('.file-section-container');
+	var html = '';
+	var iterable = Object.keys(colors_container);
+	for ( var i = 0; i < iterable.length; i++){
+		var color = colors_container[iterable[i]];
+		html += indent + 'Color color' + i + ' (' + color.r + ',' + color.g + ',' + color.b + ')' + line_class_close;
+	}
+	var iterable = Object.keys(line_style_container);
+	for ( var i = 0; i < iterable.length; i++){
+		var line_style = line_style_container[iterable[i]];
+		html += indent + 'Line style LineStyle' + i + ' {' + line_class_close;
+		html += indent + 'width ' + line_style.width + line_class_close;
+		html += indent + 'type  ' + line_style.type + line_class_close;
+		var color_index = Object.keys(colors_container).indexOf(line_style.color);		
+		html += indent + 'color color' + color_index + line_class_close;
+		html += indent + '}' + line_class_close;
+	}
+	var iterable = Object.keys(figure_style_container);
+	for ( var i = 0; i < iterable.length; i++){
+		var figure = figure_style_container[iterable[i]];
+		if (figure.id==figure_constants.rounded){
+			html += '<span id="id-rounded'+i+'">'
+			html += indent + 'Rounded rounded' + i + ' {' + line_class_close;
+			html += indent + 'radiox ' + figure.radios[0] + line_class_close;
+			html += indent + 'radioy ' + figure.radios[1] + line_class_close;
+			html += indent + '}' + line_class_close;
+			html += '</span>'
+		}
+		else if (figure.id==figure_constants.polygon){
+			html += '<span id="id-polygon'+i+'">'
+			html += indent + 'Regular polygon polygon' + i + ' {' + line_class_close;
+			html += indent + 'vertex quantity ' + figure.vertex_qty + line_class_close;
+			html += indent + 'start angle ' + figure.start_angle + line_class_close;
+			html += indent + '}' + line_class_close;	
+			html += '</span>'
+		}
+		else if (figure.id==figure_constants.ellipse){
+			html += '<span id="id-ellipse'+i+'">'
+			html += indent + 'Ellipse ellipse' + i + ' {' + line_class_close;
+			html += indent + 'proportion (' + figure.radios[0] + ',' + figure.radios[1] + ')' + line_class_close;
+			html += indent + '}' + line_class_close;
+			html += '</span>'
+		}
+		else if (figure.id==figure_constants.custom){
+			//TO DO
+			html += '<span id="id-custom'+i+'">'
+			html += '</span>'
+		}
+		
+	}
+
+	container.html(html);
+};
+
+function generate_styles_in_file(){
+	add_style_definition_to_file();
+	//render_entity(selected_entity['name']);
+};
+
+function get_file_content_plain_text(){
+	var file_content = '';
+	$('#id-picture-file').children().each(function(i, object){
+	$(this).find('.file-line').each(function(i, object){
+		file_content += $(this).text() + '\r\n';
+		});
+	});
+	return file_content;
+};
+
+function download_picture_file(){
+	var blob = new Blob([get_file_content_plain_text()], {type: "text/plain;charset=utf-8"});
+	saveAs(blob, "graphical_" + $('#id-filename').text().split(".")[0] + ".picture");
+};
+
+function add_main_entity_to_file(entity_name, package_name){
+	var indent = '<br>&emsp;&emsp;<span class="file-line">';
+	var line_class_close = '</span>';
+	var container = $('#id-file-header');
+	var html = indent + 'import "/your_path/'+$('#id-filename').text()+ line_class_close;
+	html += indent + 'as MM' + line_class_close;
+	html += indent + 'Graphical representation NewRepresentation{' + line_class_close;
+	html += indent + 'reference package '+ package_name + line_class_close;
+	html += indent + 'root '+ entity_name + line_class_close;
+	container.append(html);
+};
+
+//-------------------------------------------------------------
+
+//----------------------------HTML Builders -------------------
+
+function setup_html_entities (){
+	var html_for_entities = '<div class="panel-group" id="accordion">';
+	for (var i = 0; i < entities.length; i++){
+		var attributes = entities[i]['attributes'];
+		var references = entities[i]['references'];
+		html_for_entities += '<div class="panel panel-default entity-elements-container">';
+		html_for_entities += '<div id="id-entity-'+i+'" class="'+((i==0)?'active-entity':'entity')+'">';
+		html_for_entities += '<a onclick="select_entity('+i+')" data-toggle="collapse" data-parent="#accordion" href="#collapse'+i+'" class="">'+((i==0)?'<span class="glyphicon glyphicon-ok">&nbsp</span>':'')+entities[i]['name']+'</a>';
+		html_for_entities += ('</div>');
+		html_for_entities += '<div id="collapse'+i+'" class="panel-collapse collapse" style="height: auto;">';
+		html_for_entities += '<div class="panel-body">';
+		html_for_entities += ('<p>Attributes--------</p>');
+		for (var j = 0; j < attributes.length; j++){
+			html_for_entities += ('<p>'+attributes[j]+'</p>');
+		}
+		html_for_entities += ('<p>References--------</p>');
+		for (var j = 0; j < references.length; j++){
+			html_for_entities += ('<p>'+references[j]+'</p>');
+		}
+		html_for_entities += ('</div>');
+		html_for_entities += ('</div>');
+		html_for_entities += ('</div>');
+		add_to_file(entities[i]);
+	}
+	html_for_entities += ('</div>');
+	$('#id-entities-container').html(html_for_entities);				
 };
 
 function get_regular_figure_properties(type){
@@ -230,7 +285,7 @@ function get_regular_figure_properties(type){
     response += '<table class="table table-bordered" id="id-icon-table-properties">';
 	response += '<thead><tr><th>Property</th><th>Value</th></tr></thead>';
 	response += '<tbody id="id-properties-container-icon-'+type+'">';
-	response += '<tr><td>Path</td><td><input type="file" name=""></td></tr>';
+	response += '<tr><td>Path</td><td><input type="text" id="id-figure-icon-path"></td></tr>';
 	response += '<tr><td>Size</td><td><input id="id-figure-icon-size-w" type="number" min="1" max="1000000" class="" placeholder="Width">';
 	response += '<input id="id-figure-icon-size-h" type="number" min="1" max="1000000" class="" placeholder="Height"></td></tr>';
 	response += '<tr><td>Position</td><td><input id="id-figure-icon-pos-x" type="number" min="1" max="1000000" class="" placeholder="X">';
@@ -241,7 +296,7 @@ function get_regular_figure_properties(type){
 	response += '</tr>';
 	
 	return response;
-}
+};
 
 function setup_style_definition(){
 	
@@ -303,7 +358,7 @@ function setup_style_definition(){
 	html_for_entities += '<thead><tr><th>Property</th><th>Value</th></tr></thead>';
 	html_for_entities += '<tbody id="id-properties-container-polygon">';
 	html_for_entities += '<tr><td>Vertex quantity</td><td><input id="id-polygon-vertex-qty" type="number" min="1" max="1000000" class="" placeholder="#"></td></tr>';
-	html_for_entities += '<tr><td>Start angle</td><td><input id="id-polygon-start-angle" type="number" min="1" max="1000000" class="" placeholder="°"></td></tr>';
+	html_for_entities += '<tr><td>Start angle</td><td><input id="id-polygon-start-angle" type="number" min="1" max="1000000" class="" placeholder="Â°"></td></tr>';
 	html_for_entities += get_regular_figure_properties('polygon');
 	html_for_entities += '</tbody>';
 	html_for_entities += '</table>';
@@ -375,38 +430,7 @@ function setup_style_definition(){
 	html_for_entities += '</select></td>';
 	html_for_entities += '</tr>';
 		
-	$('#id-properties-container').html(html_for_entities);
-	
-};
-
-function select_entity(position){
-	setup_style_definition();
-	$('.active-entity').find('a').find('.glyphicon').remove();
-	$('.active-entity').addClass('entity').removeClass('active-entity');
-	$('#id-entity-'+position).removeClass('entity').addClass('active-entity');
-	$('.active-entity').find('a').prepend('<span class="glyphicon glyphicon-ok">&nbsp</span>');
-	selected_entity = entities[position];
-	$('#id-selected-name').text(selected_entity['name']);
-	load_entity_properties();
-};
-
-function change_figure(){
-	var figure_id = selected_entity.graphical_properties.figure.id;
-	if(figure_id == 0){
-		$('#id-figure').find('img').remove();
-		$('#id-figure').attr('style', '');
-	}
-	else if (figure_id == 1){
-		$('#id-figure').append('<img src="static/images/polygon.gif" height="200" width="200">').fadeIn('slow');
-	}
-	else if (figure_id == 2){
-		var radius = 'border-radius: 50%;';
-		$('#id-figure').find('img').remove();
-		$('#id-figure').fadeIn('slow').attr('style', radius);
-	}
-	else if (figure_id == 3){
-
-	}
+	$('#id-properties-container').html(html_for_entities);	
 };
 
 function load_entity_properties(){
@@ -446,14 +470,15 @@ function load_entity_properties(){
 		
 	}
 	$('#id-figure-color').val(graphical_properties['figure']['background_color']);
-	var border = graphical_properties['figure']['border'];
+	var border = line_style_container[graphical_properties['figure']['border']];
 	$('#id-figure-border').val(border['type']);
 	$('#id-figure-border-width').val(border['width']);
 	$('#id-figure-border-color').val(border['color']);
 	if (graphical_properties['figure']['icon'] != null){
 		$('#id-icon-checkbox').prop('checked', true);
 		unbind_icon_checkbox(true);
-		//$('#id-figure-icon-path').val();
+		$('#id-figure-icon-path').val(graphical_properties['figure']['icon']['path']);
+
 		$('#id-figure-icon-size-w').val(graphical_properties['figure']['icon']['size'][0]);
 		$('#id-figure-icon-size-h').val(graphical_properties['figure']['icon']['size'][1]);
 		$('#id-figure-icon-pos-x').val(graphical_properties['figure']['icon']['position'][0]);
@@ -466,19 +491,151 @@ function load_entity_properties(){
 	$('#id-figure-phantom').val(graphical_properties['phantom']);
 };
 
+//-------------------------------------------------------------
+
+//----------------------------Helpers--------------------------
+
+function hexToRgb(hex) {
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+    } : null;
+};
+
+function get_figure_type (text){
+	if (text.match('^Regular')){
+		return 0;
+	}
+	else if (text.match('^Image')){
+		return 1;
+	}
+	else if (text.match('^Complex')){
+		return 2;
+	}
+};
+
+
+//-------------------------------------------------------------
+
+//----------------------------Objects Constructors-------------
+
+function create_entity(name, attributes, references){
+	var icon_properties = {
+			path: '/change/default/path',
+			size: ['10','10'],
+			position: ['15','15']
+	};
+	var default_color = '#dddddd';
+	var default_border_color = '#a1a1a1';
+	var border = {
+		width: '2',
+		type: 'solid',
+		color: default_border_color
+	};
+
+	line_style_container['0'] = border;
+	
+	var rounded = {
+			id: 0,
+			radios: ['5','5'],
+			background_color: default_color,
+			border: '0',
+			icon: icon_properties
+	};
+	colors_container['#dddddd'] = hexToRgb(default_color);
+	colors_container['#a1a1a1'] = hexToRgb(default_border_color);
+
+	
+	var graphical_properties_rounded = {
+			label_icon: 'false',
+			label_placement: 'internal',
+			size: ['100','200'],
+			figure: rounded,
+			phantom: 'false'
+	};
+	figure_style_container['rounded'] = {
+		id: figure_constants.rounded,
+		radios: ['5','5']
+	};
+					
+	var entityObject = {
+			name: name, 
+			attributes: attributes,
+			references: references,
+			graphical_properties: graphical_properties_rounded
+			};
+	entities.push(entityObject);
+	add_to_file(entityObject);
+	add_style_definition_to_file();
+};
+
+function setup_entities () {
+	$('.entity-elements-container').each(function(i, object)
+	{
+		var name = $(this).find('.entity-name').html();
+		var attributes = [];
+		var references = [];
+		$(this).find('.entity-attribute').each(function(i, object){
+			attributes.push($(this).html());
+		});
+		$(this).find('.entity-reference').each(function(i, object){
+			references.push($(this).html());
+		});
+		create_entity(name, attributes, references);							    
+	});
+		
+	select_entity(0);
+};
+
+//-------------------------------------------------------------
+
+//----------------------------User interaction-----------------
+
+function select_entity(position){
+	setup_style_definition();
+	$('.active-entity').find('a').find('.glyphicon').remove();
+	$('.active-entity').addClass('entity').removeClass('active-entity');
+	$('#id-entity-'+position).removeClass('entity').addClass('active-entity');
+	$('.active-entity').find('a').prepend('<span class="glyphicon glyphicon-ok">&nbsp</span>');
+	selected_entity = entities[position];
+	$('#id-selected-name').text(selected_entity['name']);
+	load_entity_properties();
+};
+
+function change_figure(){
+	var figure_id = selected_entity.graphical_properties.figure.id;
+	if(figure_id == 0){
+		$('#id-figure').find('img').remove();
+		var average = ((selected_entity.graphical_properties.figure.radios[0]+selected_entity.graphical_properties.figure.radios[1])/2) + 'px'
+		$('#id-figure').css('border-radius', average);
+	}
+	else if (figure_id == 1){
+		$('#id-figure').append('<img src="static/images/polygon.gif" height="200" width="200">').fadeIn('slow');
+	}
+	else if (figure_id == 2){
+		var radius = 'border-radius: 50%;';
+		$('#id-figure').find('img').remove();
+		$('#id-figure').fadeIn('slow').attr('style', radius);
+	}
+	else if (figure_id == 3){
+
+	}
+};
+
 function save_current_entity(){
 	$('.alert').html('<h4>Saving...</h4>').fadeIn('slow');
 	var icon_properties = null;
 	
 	if ($('#id-icon-checkbox').prop('checked')){
 		icon_properties = {
-				path: '',
+				path: $('#id-figure-icon-path').val(),
 				size: [$('#id-figure-icon-size-w').val(),$('#id-figure-icon-size-h').val()],
 				position: [$('#id-figure-icon-pos-x').val(),$('#id-figure-icon-pos-y').val()]
 		};
 		$('#id-icon-checkbox').prop('checked');
-		unbind_icon_checkbox(true);
-		//$('#id-figure-icon-path').val();					
+		unbind_icon_checkbox(true);		
 	}
 	else{
 		$('#id-icon-checkbox').prop('checked',false);
@@ -497,10 +654,13 @@ function save_current_entity(){
 		color: selected_border_color
 	};
 
+	var new_border_key = (Object.keys(line_style_container).length) + ''
+	line_style_container[new_border_key] = border;
+
 	var figure_properties = {
 			id: figure_id,
 			background_color: selected_figure_color,
-			border: border,
+			border: new_border_key,
 			icon: icon_properties
 	};
 
@@ -553,6 +713,7 @@ function save_current_entity(){
 	
 	$('.alert').fadeOut('slow');
 	add_to_graphical_definition(selected_entity);
+	add_style_definition_to_file();
 	change_figure();
 	//render_entity(selected_entity['name']);
 };
@@ -563,36 +724,7 @@ function select_figure(position){
 	$('#id-figure-type-'+position).removeClass('figure').addClass('active-figure');
 	$('.active-figure').find('a').prepend('<span class="glyphicon glyphicon-ok">&nbsp</span>');
 	selected_figure = position;
-	$('#id-selected-name').text(selected_entity['name']);
-	
-};
-
-function setup_picture_file_content(){
-	var break_line = '\n';
-	var content = 'import "/model/bpmn2.ecore"';
-	content += break_line + 'as MM';
-	content += break_line + 'Graphical representation BPMN {';
-	
-	$('#id-picture-file').val(content);
-	};
-
-$(document).ready(function (){
-	setup_project();
-	$('#id-icon-checkbox').click(function() {
-    var $this = $(this);
-    if ($this.is(':checked')) {
-	    	unbind_icon_checkbox(true);
-	    } else {
-	    	unbind_icon_checkbox(false);
-	    }
-	});
-});
-
-function setup_project(){
-	setup_entities();
-	//setup_html_entities();
-	setup_style_definition();
-	setup_picture_file_content();
+	$('#id-selected-name').text(selected_entity['name']);	
 };
 
 function unbind_icon_checkbox(state) {
@@ -630,7 +762,6 @@ function render_entity(entity_name){
 	entity_div.find('.file-figure-container').find('.file-line').each(function (i, object){
 		render_size_property($(this).text());
 	});
-
 };
 
 function render_regular (text){
@@ -662,19 +793,6 @@ function render_regular (text){
 	else if(regular_type.match('^Complex')){
 
 	}
-
-};
-
-function get_figure_type (text){
-	if (text.match('^Regular')){
-		return 0;
-	}
-	else if (text.match('^Image')){
-		return 1;
-	}
-	else if (text.match('^Complex')){
-		return 2;
-	}
 };
 
 function render_size_property(text){
@@ -703,70 +821,17 @@ function render_label_property(text){
 	}
 };
 
-function get_file_content_plain_text(){
-	var file_content = '';
-	$('#id-picture-file').children().each(function(i, object){
-	$(this).find('.file-line').each(function(i, object){
-		file_content += $(this).text() + '\r\n';
-		});
-	});
-	return file_content;
-};
-
-function download_picture_file(){
-	var blob = new Blob([get_file_content_plain_text()], {type: "text/plain;charset=utf-8"});
-	saveAs(blob, "graphical_" + $('#id-filename').text().split(".")[0] + ".picture");
-};
-
-function add_style_definition_to_file (){
-	var indent = '<br>&emsp;&emsp;<span class="file-line">';
-	var line_class_close = '</span>';
-	var container = $('#id-file-style').find('.file-section-container');
-	var html = '';
-	var iterable = Object.keys(colors_container);
-	for ( var i = 0; i < iterable.length; i++){
-		var color = colors_container[iterable[i]];
-		html += indent + 'Color color' + i + ' (' + color.r + ',' + color.g + ',' + color.b + ')' + line_class_close;
+function select_main_entity(){
+	var main_entity = $('#id-main-entity').val();
+	var package_name = $('#id-package').val();
+	$('#id-modal-main-entity').modal('toggle');
+	var main = null;
+	for (var i = 0, found = false; i<entities.length && !found; i++){
+		var entity = entities[i];
+		if (entity.name==main_entity){
+			main = entity;
+			found = true;
+		}
 	}
-	var iterable = Object.keys(figure_style_container);
-	for ( var i = 0; i < iterable.length; i++){
-		var figure = figure_style_container[iterable[i]];
-		if (figure.id==figure_constants.rounded){
-			html += '<span id="id-rounded'+i+'">'
-			html += indent + 'Rounded rounded' + i + ' {' + line_class_close;
-			html += indent + 'radiox ' + figure.radios[0] + line_class_close;
-			html += indent + 'radioy ' + figure.radios[1] + line_class_close;
-			html += indent + '}' + line_class_close;
-			html += '</span>'
-		}
-		else if (figure.id==figure_constants.polygon){
-			html += '<span id="id-polygon'+i+'">'
-			html += indent + 'Regular polygon polygon' + i + ' {' + line_class_close;
-			html += indent + 'vertex quantity ' + figure.vertex_qty + line_class_close;
-			html += indent + 'start angle ' + figure.start_angle + line_class_close;
-			html += indent + '}' + line_class_close;	
-			html += '</span>'
-		}
-		else if (figure.id==figure_constants.ellipse){
-			html += '<span id="id-ellipse'+i+'">'
-			html += indent + 'Ellipse ellipse' + i + ' {' + line_class_close;
-			html += indent + 'proportion (' + figure.radios[0] + ',' + figure.radios[1] + ')' + line_class_close;
-			html += indent + '}' + line_class_close;
-			html += '</span>'
-		}
-		else if (figure.id==figure_constants.custom){
-			//TO DO
-			html += '<span id="id-custom'+i+'">'
-			html += '</span>'
-		}
-		
-	}
-
-	container.html(html);
+	add_main_entity_to_file(main_entity, package_name);
 };
-
-function generate_styles_in_file(){
-	add_style_definition_to_file();
-	//render_entity(selected_entity['name']);
-};
-

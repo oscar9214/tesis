@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="archiBPM" nsURI="http://uniandes.edu.co/metamodels/archimateBPM"
+    nsPrefix="acbp">
+  <eClassifiers xsi:type="ecore:EClass" name="ArchimateModel">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="elements" upperBound="-1"
+        eType="#//ArchimateElement" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="relations" upperBound="-1"
+        eType="#//ArchimateRelation" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="groups" upperBound="-1"
+        eType="#//Group" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="connectors" upperBound="-1"
+        eType="#//Connector" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ArchimateElement" abstract="true" eSuperTypes="#//Element">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="elementName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="description" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="composedOf" upperBound="-1"
+        eType="#//ArchimateElement" containment="true" eOpposite="#//ArchimateElement/composes"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="composes" eType="#//ArchimateElement"
+        eOpposite="#//ArchimateElement/composedOf"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ArchimateRelation" abstract="true">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="connectorName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="sourceC" eType="#//Element"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="targetC" eType="#//Element"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Element" abstract="true"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Group">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="groupName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="groupElements" upperBound="-1"
+        eType="#//ArchimateElement" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="value" eSuperTypes="#//ArchimateElement"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Product" eSuperTypes="#//ArchimateElement"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Contract" eSuperTypes="#//BusinessObject"/>
+  <eClassifiers xsi:type="ecore:EClass" name="BusinessObject" eSuperTypes="#//ArchimateElement"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Meaning" eSuperTypes="#//ArchimateElement"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Representation" eSuperTypes="#//ArchimateElement"/>
+  <eClassifiers xsi:type="ecore:EClass" name="BusinessService" eSuperTypes="#//ArchimateElement"/>
+  <eClassifiers xsi:type="ecore:EClass" name="BusinessArchimateElement" abstract="true"
+      eSuperTypes="#//ArchimateElement"/>
+  <eClassifiers xsi:type="ecore:EClass" name="BusinessFunction" eSuperTypes="#//BusinessArchimateElement"/>
+  <eClassifiers xsi:type="ecore:EClass" name="BusinessInteraction" eSuperTypes="#//BusinessArchimateElement"/>
+  <eClassifiers xsi:type="ecore:EClass" name="BusinessEvent" eSuperTypes="#//ArchimateElement"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Location" eSuperTypes="#//ArchimateElement">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="address" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="BusinessInterface" eSuperTypes="#//ArchimateElement"/>
+  <eClassifiers xsi:type="ecore:EClass" name="BusinessRole" eSuperTypes="#//ArchimateElement"/>
+  <eClassifiers xsi:type="ecore:EClass" name="BusinessCollaboration" eSuperTypes="#//BusinessRole"/>
+  <eClassifiers xsi:type="ecore:EClass" name="BusinessActor" eSuperTypes="#//ArchimateElement"/>
+  <eClassifiers xsi:type="ecore:EClass" name="ApplicationService" eSuperTypes="#//ArchimateElement"/>
+  <eClassifiers xsi:type="ecore:EClass" name="ApplicationFunction" eSuperTypes="#//ArchimateElement"/>
+  <eClassifiers xsi:type="ecore:EClass" name="ApplicationInteraction" eSuperTypes="#//ApplicationFunction"/>
+  <eClassifiers xsi:type="ecore:EClass" name="ApplicationInterface" eSuperTypes="#//ArchimateElement"/>
+  <eClassifiers xsi:type="ecore:EClass" name="ApplicationComponent" eSuperTypes="#//ArchimateElement"/>
+  <eClassifiers xsi:type="ecore:EClass" name="ApplicationCollaboration" eSuperTypes="#//ApplicationComponent"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Composition" eSuperTypes="#//ArchimateRelation"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Aggregation" eSuperTypes="#//ArchimateRelation"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Access" eSuperTypes="#//ArchimateRelation"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Association" eSuperTypes="#//ArchimateRelation"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Triggering" eSuperTypes="#//ArchimateRelation"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Flow" eSuperTypes="#//ArchimateRelation"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Specialization" eSuperTypes="#//ArchimateRelation"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Realization" eSuperTypes="#//ArchimateRelation"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Assignment" eSuperTypes="#//ArchimateRelation"/>
+  <eClassifiers xsi:type="ecore:EClass" name="UsedBy" eSuperTypes="#//ArchimateRelation"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Pool">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="poolName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="lanes" upperBound="-1"
+        eType="#//Lane" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Lane">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="laneName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="elements" upperBound="-1"
+        eType="#//ProccessElement" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ProccessElement" abstract="true" eSuperTypes="#//Element">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="elementName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="elementDescription" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="StartEvent" eSuperTypes="#//ProccessElement">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="eventType" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="IntermediateEvent" eSuperTypes="#//ProccessElement">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="eventType" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="EndEvent" eSuperTypes="#//ProccessElement">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="eventType" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Activity" eSuperTypes="#//ProccessElement">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="activityType" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Gateway" eSuperTypes="#//ProccessElement">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DataObject" eSuperTypes="#//ProccessElement"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Connector" abstract="true">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="sourceC" eType="#//ProccessElement"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="targetC" eType="#//ProccessElement"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="elementName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="elementDescription" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SequenceFlow" eSuperTypes="#//Connector"/>
+  <eClassifiers xsi:type="ecore:EClass" name="MessageFlow" eSuperTypes="#//Connector"/>
+  <eClassifiers xsi:type="ecore:EClass" name="AssociationBPMN" eSuperTypes="#//Connector"/>
+  <eClassifiers xsi:type="ecore:EClass" name="BusinessProcess" eSuperTypes="#//BusinessArchimateElement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="pools" upperBound="-1"
+        eType="#//Pool" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="processID" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        defaultValueLiteral=""/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="processFullName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="processType" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="importance" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="processDesign" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="missionary" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+  </eClassifiers>
+</ecore:EPackage>

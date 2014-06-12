@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="canvasFA" nsURI="http://uniandes.edu.co/canvasFA" nsPrefix="canvasFA">
+  <eClassifiers xsi:type="ecore:EClass" name="CanvasFA">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="nombre" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="descripcion" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="propuestas" lowerBound="1"
+        upperBound="-1" eType="#//Propuesta" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="segmentos" lowerBound="1"
+        upperBound="-1" eType="#//Segmento" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="relaciones" lowerBound="1"
+        upperBound="-1" eType="#//Relacion" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="canales" lowerBound="1"
+        upperBound="-1" eType="#//Canal" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ingresos" lowerBound="1"
+        upperBound="-1" eType="#//Ingreso" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="actividades" lowerBound="1"
+        upperBound="-1" eType="#//Actividad" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="socios" lowerBound="1"
+        upperBound="-1" eType="#//Socio" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="recursosfisicos" lowerBound="1"
+        upperBound="-1" eType="#//RecursoFisico" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="recursoshumanos" lowerBound="1"
+        upperBound="-1" eType="#//RecursoHumano" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="recursosfinancieros" upperBound="-1"
+        eType="#//RecursoFinanciero" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="recursostecnologicos" lowerBound="1"
+        upperBound="-1" eType="#//RecursoTecnologico" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="costosvariables" upperBound="-1"
+        eType="#//CostoVariable" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="costosfijos" upperBound="-1"
+        eType="#//CostoFijo" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Propuesta">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="canales" lowerBound="1"
+        upperBound="-1" eType="#//Canal"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="nombre" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="descripcion" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="actividades" lowerBound="1"
+        upperBound="-1" eType="#//Actividad"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="relaciones" lowerBound="1"
+        upperBound="-1" eType="#//Relacion" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Segmento">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="nombre" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="descripcion" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ingresos" lowerBound="1"
+        upperBound="-1" eType="#//Ingreso"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="porcentaje" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Canal">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="nombre" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="descripcion" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="segmentos" lowerBound="1"
+        upperBound="-1" eType="#//Segmento"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Relacion">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="nombre" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="descripcion" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="segmentos" lowerBound="1"
+        upperBound="-1" eType="#//Segmento"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Costo" abstract="true">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="nombre" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="descripcion" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Ingreso">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="nombre" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="descripcion" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="porcentaje" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Actividad">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="nombre" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="descripcion" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="recursos" upperBound="-1"
+        eType="#//Recurso"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="socios" upperBound="-1"
+        eType="#//Socio"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Socio">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="nombre" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="descripcion" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="costos" lowerBound="1"
+        upperBound="-1" eType="#//Costo"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Recurso" abstract="true">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="nombre" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="descripcion" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="costos" lowerBound="1"
+        upperBound="-1" eType="#//Costo"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RecursoHumano" eSuperTypes="#//Recurso"/>
+  <eClassifiers xsi:type="ecore:EClass" name="RecursoFinanciero" eSuperTypes="#//Recurso"/>
+  <eClassifiers xsi:type="ecore:EClass" name="RecursoFisico" eSuperTypes="#//Recurso"/>
+  <eClassifiers xsi:type="ecore:EClass" name="RecursoTecnologico" eSuperTypes="#//Recurso"/>
+  <eClassifiers xsi:type="ecore:EClass" name="CostoVariable" eSuperTypes="#//Costo"/>
+  <eClassifiers xsi:type="ecore:EClass" name="CostoFijo" eSuperTypes="#//Costo"/>
+</ecore:EPackage>
