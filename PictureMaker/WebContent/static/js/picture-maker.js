@@ -1,3 +1,4 @@
+
 var entities = [];
 var style_definition = [];
 var selected_entity = null;
@@ -32,22 +33,12 @@ $(document).ready(function (){
 function setup_project(){
 	setup_entities();
 	//setup_html_entities();
-	setup_style_definition();
-	setup_picture_file_content();
+	setup_style_definition();	
 	load_entity_properties();
 };
 
 
 //--------------------------File Writer and download-----------
-
-function setup_picture_file_content(){
-	var break_line = '\n';
-	var content = 'import "/model/bpmn2.ecore"';
-	content += break_line + 'as MM';
-	content += break_line + 'Graphical representation BPMN {';
-	
-	$('#id-picture-file').val(content);
-};
 
 function add_to_file(entity){
 	add_to_palette(entity);
@@ -55,7 +46,7 @@ function add_to_file(entity){
 };
 
 function add_to_palette(entity){
-	var indent = '<br>&emsp;&emsp;<span class="file-line">';
+	var indent = '<br>&emsp;&emsp;&emsp;<span class="file-line">';
 	var line_class_close = '</span>';
 	var container = $('#id-file-palette').find('.file-section-container');
 	var html = '';
@@ -213,15 +204,20 @@ function download_picture_file(){
 };
 
 function add_main_entity_to_file(entity_name, package_name){
-	var indent = '<br>&emsp;&emsp;<span class="file-line">';
+	var indent = '<br><span class="file-line">';
 	var line_class_close = '</span>';
 	var container = $('#id-file-header');
-	var html = indent + 'import "/your_path/'+$('#id-filename').text()+ line_class_close;
+	var html = indent + 'import "/your_path/'+$('#id-filename').text()+ '"' + line_class_close;
 	html += indent + 'as MM' + line_class_close;
 	html += indent + 'Graphical representation NewRepresentation{' + line_class_close;
-	html += indent + 'reference package '+ package_name + line_class_close;
-	html += indent + 'root '+ entity_name + line_class_close;
-	container.append(html);
+	var indent_2 = '<br>&emsp;&nbsp;<span class="file-line">';
+	html += indent_2 + 'reference package '+ package_name + line_class_close;
+	html += indent_2 + 'root '+ entity_name + line_class_close;
+	container.append(html);	
+	var palette_header = indent_2 + '<span class="file-line">Palette for '+entity_name+'{</span>';
+	palette_header += indent_2 + 'Tool group ElementsPalette{' + line_class_close;
+	palette_header += indent_2 + '&emsp;description "Elements"' + line_class_close;
+	$('#id-file-palette').prepend(palette_header);
 };
 
 //-------------------------------------------------------------
@@ -566,8 +562,7 @@ function create_entity(name, attributes, references){
 			references: references,
 			graphical_properties: graphical_properties_rounded
 			};
-	entities.push(entityObject);
-	add_to_file(entityObject);
+	entities.push(entityObject);	
 	add_style_definition_to_file();
 };
 
@@ -823,7 +818,7 @@ function render_label_property(text){
 
 function select_main_entity(){
 	var main_entity = $('#id-main-entity').val();
-	var package_name = $('#id-package').val();
+	var package_name = $('#id-package-name').val();
 	$('#id-modal-main-entity').modal('toggle');
 	var main = null;
 	for (var i = 0, found = false; i<entities.length && !found; i++){
@@ -831,7 +826,37 @@ function select_main_entity(){
 		if (entity.name==main_entity){
 			main = entity;
 			found = true;
+			entities.splice(i,1);
 		}
 	}
 	add_main_entity_to_file(main_entity, package_name);
+	for (var i = 0, found = false; i<entities.length && !found; i++){
+		var entity = entities[i];
+		add_to_file(entity);
+	}
 };
+
+function show_rules_tool(){
+	add_class_to_rules_tool();
+	$('#id-modal-rules').modal('toggle');
+};
+
+function add_class_to_rules_tool(){
+	var modal_content = '<tr>';
+	modal_content += '<td> If </td>';
+	modal_content += '<td><select class="pull-left" id="id-left-entity">';
+	for (var i = 0, found = false; i<entities.length && !found; i++){
+		var entity = entities[i];
+		modal_content += '<option value="'+entity.name+'">'+entity.name+'</option>';
+	}	
+	modal_content += '</select></td></tr>';
+	modal_content += '<tr><td><button class="btn btn-info btn-xs">+</button>Type is</td>';
+    modal_content += '<td><input class="" type="text" id="id-package-name"></td><td>Use</td>';
+	modal_content += '<td><select class="pull-left" id="id-right-entity">';
+	for (var i = 0, found = false; i<entities.length && !found; i++){
+		var entity = entities[i];
+		modal_content += '<option value="'+entity.name+'">'+entity.name+'</option>';
+	}	
+	modal_content += '</select></td></tr>';
+	$('#id-modal-rules').find('table').html($('#id-modal-rules').find('table').html+modal_content);
+}

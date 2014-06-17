@@ -10,7 +10,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content=".picture files maker">
-<meta name="author" content="Oscar Martínez">
+<meta name="author" content="Oscar MartÃ­nez">
 <link rel="shortcut icon" href="../../assets/ico/favicon.ico">
 
 <title>Picture Maker</title>
@@ -189,7 +189,9 @@
 
 	<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
 		<div class="container-fluid" style="background: #222; padding-top: 8px;">
-		<button type="button" class="btn btn-success pull-right" onclick="download_picture_file();"><span class="glyphicon glyphicon-floppy-save"></span>&nbspDownload File</button>
+		<button type="button" class="btn btn-success pull-right" onclick="show_rules_tool();"><span class="glyphicon glyphicon glyphicon-wrench"></span>&nbsp Define rules</button>
+		<button type="button" class="btn btn-success pull-right" onclick="show_wizard_tools();" disabled><span class="glyphicon glyphicon glyphicon-wrench"></span>&nbsp Define wizards</button>
+		<button type="button" class="btn btn-success pull-right" onclick="download_picture_file();" disabled><span class="glyphicon glyphicon-floppy-save"></span>&nbspDownload File</button>
 			<div class="navbar-header">
 				
 				
@@ -286,16 +288,11 @@
 	  	
 	  		<div id="id-picture-file">
 	  			<div id="id-file-header">
-	  				<br><span class="file-line">import "/model/bpmn2.ecore"</span>
-	  				<br><span class="file-line">as MM</span>
-	  				<br><span class="file-line">Graphical representation BPMN {</span>
-	  				<br><span class="file-line">&emsp;reference package bpmn</span>
-	  				<br><span class="file-line">&emsp;root MacroProcess</span>
+	  				
 				</div>
-				<div id="id-file-palette">
-					<span class="file-line">&emsp;Palette for MacroProcess{</span>
-					<br>&emsp;&nbsp;
+				<div id="id-file-palette">					
 					<br><div class="file-section-container"></div>
+					<br><span class="file-line">&emsp;&emsp;}</span>
 					<br><span class="file-line">&emsp;}</span>
 				</div>
 				<div id="id-file-style">
@@ -327,16 +324,17 @@
 	</div>
 	</div>
 
+
+<!-- main entity modal -->
 <div  class="modal fade" id="id-modal-main-entity" data-backdrop="static">
   <div class="modal-dialog">
     <div class="modal-content">
-      <div class="modal-header">
-        <h3 class="modal-title">Select main entity</h3>
+      <div class="modal-header" style="background: #222; color: #FFF;">
+        <h3 class="modal-title">Get started</h3>
       </div>
       <div class="modal-body">
         <p>Please select the entity of your metamodel which will be the canvas that will contain all the other entities</p>
-      </div>
-      <select class="custom-select" id="id-figure-border">
+        <select class="form-control" id="id-main-entity">
       	<%
 			// retrieve your list from the request, with casting 
 				list = new ArrayList<Entity>();
@@ -346,20 +344,40 @@
 					// print the information about every category of the list					
 					for( int i = 0 ; i < list.size(); i++) {
 						Entity entity = list.get(i);
-						out.println("<option value=\""+entity.name+"\">"+entity.name+"</option>");						
+						out.println("<option data-entity-id=\""+i+"\" value=\""+entity.name+"\">"+entity.name+"</option>");						
 					}					
 				}				
 		%>			
 		</select>
+		<p>Please type the metamodel package.</p>
+		<input class="form-control" type="text" id="id-package-name">
+      </div>      
       <div class="modal-footer">
-        <button id="id-button-create-student" class="yc-button yc-bluebutton"
-                    onclick="select_main_entity();">OK</button>
+        <button class="btn btn-success" onclick="select_main_entity();">OK</button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
-	
+<!-- rules modal -->
+<div  class="modal fade" id="id-modal-rules" data-backdrop="static">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header" style="background: #222; color: #FFF;">
+        <h3 class="modal-title">Rules Definition</h3>
+      </div>
+      <div class="modal-body">
+        <p>Select a class to define some rules</p>
+        <table>
+        	
+        </table>			
+      </div>      
+      <div class="modal-footer">
+        <button class="btn btn-success" onclick="select_main_entity();">OK</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->	
 
 	<!-- Bootstrap core JavaScript
     ================================================== -->
