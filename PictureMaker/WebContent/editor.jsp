@@ -26,6 +26,14 @@
 	rel="stylesheet">
 
 <style>
+.page-container {
+	border: 1px solid #BBFFFF;
+	border-radius: 3px;
+}
+
+.table-outside {border: 1px solid red}
+.table-outside>td,tr {border: 0}
+
 #id-div-entities{
     height: 400px;
     overflow-y: scroll;
@@ -189,14 +197,11 @@
 
 	<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
 		<div class="container-fluid" style="background: #222; padding-top: 8px;">
+		<button id="id-button-download"  type="button" class="btn btn-success pull-right" onclick="download_picture_file();" disabled><span class="glyphicon glyphicon-floppy-save"></span>&nbspDownload File</button>		
+		<button id="id-button-wizards" type="button" class="btn btn-success pull-right" onclick="show_wizard_tool();" disabled><span class="glyphicon glyphicon glyphicon-wrench"></span>&nbsp Define wizards</button>
 		<button type="button" class="btn btn-success pull-right" onclick="show_rules_tool();"><span class="glyphicon glyphicon glyphicon-wrench"></span>&nbsp Define rules</button>
-		<button type="button" class="btn btn-success pull-right" onclick="show_wizard_tools();" disabled><span class="glyphicon glyphicon glyphicon-wrench"></span>&nbsp Define wizards</button>
-		<button type="button" class="btn btn-success pull-right" onclick="download_picture_file();" disabled><span class="glyphicon glyphicon-floppy-save"></span>&nbspDownload File</button>
-			<div class="navbar-header">
-				
-				
+			<div class="navbar-header">			
 				<% out.println("<h4 style=\"color: #FFFFFF;\" id=\"id-filename\">" + request.getAttribute("fileName") + "</h4>");%>
-
 			</div>
 			<div class="navbar-collapse collapse"></div>
 		</div>
@@ -308,12 +313,12 @@
 					<br><span class="file-line">&emsp;}</span>
 				</div><div id="id-file-rules">
 					<span class="file-line">&emsp;Rules definition {</span>
-					<br>&emsp;&nbsp;
+					<div class="file-section-container"></div>
 					<br><span class="file-line">&emsp;}</span>
 				</div>
 				<div id="id-file-interaction">
 					<span class="file-line">&emsp;Interaction definition {</span>
-					<br>&emsp;&nbsp;
+					<div class="file-section-container"></div>
 					<br><span class="file-line">&emsp;}</span>
 				</div><div id="id-file-footer">
 					<span class="file-line">}</span>
@@ -367,13 +372,34 @@
         <h3 class="modal-title">Rules Definition</h3>
       </div>
       <div class="modal-body">
+      	<button class="btn btn-info btn-xs pull-right" onclick="add_rule_to_html();">+Add Rule</button>      	
         <p>Select a class to define some rules</p>
-        <table>
+        <div id="id-rules-class-container">
         	
-        </table>			
+        </div>			
       </div>      
       <div class="modal-footer">
-        <button class="btn btn-success" onclick="select_main_entity();">OK</button>
+        <button class="btn btn-success" onclick="add_rules_to_file();">OK</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->	
+
+
+<!-- wizards modal -->
+<div  class="modal fade" id="id-modal-wizards" data-backdrop="static">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header" style="background: #222; color: #FFF;">
+        <h3 class="modal-title">Wizards Definition</h3>
+      </div>
+      <div class="modal-body">
+      	<button class="btn btn-info btn-xs pull-right" onclick="add_wizard_to_html();">+Add Wizard</button>      	
+        <div id="id-wizards-container">        	
+        </div>			
+      </div>      
+      <div class="modal-footer">
+        <button class="btn btn-success" onclick="add_wizards_to_file();">OK</button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->

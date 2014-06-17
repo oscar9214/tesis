@@ -19,7 +19,7 @@ var line_style_container = {};
 
 $(document).ready(function (){
 	setup_project();
-	$('#id-icon-checkbox').click(function() {
+	$('.id-icon-checkbox').click(function() {
     var $this = $(this);
     if ($this.is(':checked')) {
 	    	unbind_icon_checkbox(true);
@@ -275,7 +275,7 @@ function get_regular_figure_properties(type){
 	response += '<td>';
 	response += '<div class="checkbox">';
 	response += '<label>';
-	response += '<input id="id-icon-checkbox" type="checkbox" checked> <span id="id-icon-checkbox-label">Selected';
+	response += '<input class="id-icon-checkbox" id="id-icon-checkbox" type="checkbox" checked> <span id="id-icon-checkbox-label">Selected';
 	response += '</label>';
 	response += '</div>';
     response += '<table class="table table-bordered" id="id-icon-table-properties">';
@@ -836,27 +836,299 @@ function select_main_entity(){
 	}
 };
 
+
+//------------------------------------Rules Definition
+
+var classes_with_rules = 0;
+
 function show_rules_tool(){
-	add_class_to_rules_tool();
 	$('#id-modal-rules').modal('toggle');
 };
 
-function add_class_to_rules_tool(){
-	var modal_content = '<tr>';
+function add_class_to_rules_tool(id){
+	var modal_content = '<div id="id-rule-'+id+'"><hr style="border-top: 3px solid #70DBDB;">';
+	modal_content += '<button class="btn btn-danger btn-xs" onclick="remove_rule('+id+');">-Remove</button>';
+	modal_content += '<button class="btn btn-info btn-xs pull-right" onclick="add_rule_case('+id+');">+Add Case</button></p>';
+	modal_content += '<table class="table" id="id-rules-class-'+id+'"><tr>';
 	modal_content += '<td> If </td>';
 	modal_content += '<td><select class="pull-left" id="id-left-entity">';
 	for (var i = 0, found = false; i<entities.length && !found; i++){
 		var entity = entities[i];
 		modal_content += '<option value="'+entity.name+'">'+entity.name+'</option>';
 	}	
-	modal_content += '</select></td></tr>';
-	modal_content += '<tr><td><button class="btn btn-info btn-xs">+</button>Type is</td>';
+	modal_content += '</select></td><td colspan="2"></td></tr>';
+	modal_content += '<tr class="case"><td>Type is</td>';
     modal_content += '<td><input class="" type="text" id="id-package-name"></td><td>Use</td>';
 	modal_content += '<td><select class="pull-left" id="id-right-entity">';
 	for (var i = 0, found = false; i<entities.length && !found; i++){
 		var entity = entities[i];
 		modal_content += '<option value="'+entity.name+'">'+entity.name+'</option>';
 	}	
-	modal_content += '</select></td></tr>';
-	$('#id-modal-rules').find('table').html($('#id-modal-rules').find('table').html+modal_content);
+	modal_content += '</select></td></tr></table></div>';
+	$('#id-rules-class-container').append(modal_content);
 }
+
+function add_rule_to_html(){
+	classes_with_rules++;
+	add_class_to_rules_tool(classes_with_rules);
+};
+
+function add_rule_case(id){
+	var modal_content = '<tr class="case"><td>Type is</td>';
+    modal_content += '<td><input class="" type="text" id="id-package-name"></td><td>Use</td>';
+	modal_content += '<td><select class="pull-left" id="id-right-entity">';
+	for (var i = 0, found = false; i<entities.length && !found; i++){
+		var entity = entities[i];
+		modal_content += '<option value="'+entity.name+'">'+entity.name+'</option>';
+	}	
+	modal_content += '</select><button class="btn btn-danger btn-xs pull-right" onclick="delete_rule_case(this);">-Delete Case</button></td></tr>';
+	$('#id-rules-class-'+id).append(modal_content);
+};
+
+function remove_rule(id){
+	$('#id-rule-'+id).remove();
+};
+
+function delete_rule_case(elem){
+	$(elem).parent().parent().remove();
+};
+
+function add_rules_to_file(){
+	var indent = '<br>&emsp;&emsp;<span class="file-line">';
+	var line_class_close = '</span>';
+	var container = $('#id-file-rules').find('.file-section-container');
+	var html = '';	
+	$('#id-rules-class-container').children().each(function(i, object){
+		var class_name = $(this).find('table').find('#id-left-entity').val();
+		html += indent + 'Rules for class '+class_name+' {'+ line_class_close;
+		$(this).find('.case').each(function(i, object){
+			var type = $(this).find('#id-package-name').val();
+			var use_class = $(this).find('#id-right-entity').val();
+			html += indent + 'case "element.getEventType()!= null && element.getEventType().equals(\\"'+type+'\\")" use ' + use_class + line_class_close;			
+		});
+		html += indent + '}' + line_class_close;
+	});
+	container.html(html);
+	$('#id-modal-rules').modal('toggle');
+	$('#id-button-wizards').removeAttr('disabled');
+};
+
+//---------------------------------------Wizards Definition
+
+function show_wizard_tool(){
+	$('#id-modal-wizards').modal('toggle');
+};
+
+var wizards = 0;
+
+function add_wizard_to_html(){
+	wizards++;
+	add_new_wizard(wizards);
+};
+
+function remove_wizard(id){
+	$('#id-wizard-'+id).remove();
+};
+
+function add_new_wizard(id){
+	var modal_content = '<div id="id-wizard-'+id+'"><hr style="border-top: 3px solid #70DBDB;">';
+	modal_content += '<button class="btn btn-danger btn-xs" onclick="remove_wizard('+id+');">-Remove</button>';
+	modal_content += '<table class="table" id="id-wizard-table-'+id+'">';
+	modal_content += '<tr><td> Title </td>';
+	modal_content += '<td><input type="text" id="id-wizard-name"></td></tr>';
+	modal_content += '<tr><td> Description </td>';
+	modal_content += '<td><input type="text" id="id-wizard-desc"></td></tr>';	
+	modal_content += '<tr><td> Class </td>';
+	modal_content += '<td><select id="id-left-entity" onchange="load_properties_in_wizard(this);">';
+	for (var i = 0, found = false; i<entities.length && !found; i++){
+		var entity = entities[i];
+		modal_content += '<option value="'+entity.name+'">'+entity.name+'</option>';
+	}
+	modal_content += '</select></td></tr>';
+	modal_content += '<tr><td> Pages </td>';
+	modal_content += '<td><button class="btn btn-info btn-xs pull-right" onclick="add_wizard_page_to_html();">+Add Page</button> <div id="id-page-container"><div class="page-container">';
+	modal_content += 'Title';
+	modal_content += '<input type="text" id="id-wizard-page-name" class="custom-select"><br>';
+	modal_content += 'Description';
+	modal_content += '<input type="text" id="id-wizard-page-desc" class="custom-select"><br>';	
+	modal_content += '<div class="wizard-attr">';	
+	var attributes = entities[0].attributes;
+
+	if (attributes.length > 0){
+		modal_content += 'Select the attributes that you want to show in this page<br>';
+		modal_content += '<div id="id-left-entity-attributes">';
+		for (var i = 0; i<attributes.length; i++){		
+			modal_content += '<div class="checkbox">';
+			modal_content += '<label><input type="checkbox" value="'+attributes[i]+'">'+attributes[i]+'</label>';
+			modal_content += '</div>';
+		}
+		modal_content += '</div>';
+	}
+	else{
+		modal_content += 'This class has no attributes.<br>'
+	}
+	modal_content += '</div>';	
+	modal_content += '<div class="wizard-ref">';	
+	var references = entities[0].references;
+	if (references.length > 0){
+		modal_content += 'Select the references that you want to show in this page<br>';
+		modal_content += '<div id="id-left-entity-references">';				
+		for (var i = 0; i<references.length; i++){
+			modal_content += '<div class="checkbox">';
+			modal_content += '<label><input type="checkbox" value="'+references[i]+'">'+references[i]+'</label>';
+			modal_content += '</div>';
+		}
+		modal_content += '</div>';
+	}
+	else{
+		modal_content += 'This class has no references.<br>'
+	}
+	modal_content += '</div>';	
+	modal_content += '<button class="btn btn-danger btn-xs" onclick="remove_page(this);">-Remove</button></div></div></td></tr>';	
+	modal_content += '</table></div>';
+	$('#id-wizards-container').append(modal_content);
+}
+
+function add_wizard_page_to_html(){
+	var modal_content = '<div class="page-container">';
+	modal_content += 'Title';
+	modal_content += '<input type="text" id="id-wizard-page-name" class="custom-select"><br>';
+	modal_content += 'Description';
+	modal_content += '<input type="text" id="id-wizard-page-desc" class="custom-select"><br>';	
+	modal_content += '<div class="wizard-attr">';	
+	var attributes = entities[0].attributes;
+
+	if (attributes.length > 0){
+		modal_content += 'Select the attributes that you want to show in this page<br>';
+		modal_content += '<div id="id-left-entity-attributes">';
+		for (var i = 0; i<attributes.length; i++){		
+			modal_content += '<div class="checkbox">';
+			modal_content += '<label><input type="checkbox" value="'+attributes[i]+'">'+attributes[i]+'</label>';
+			modal_content += '</div>';
+		}
+		modal_content += '</div>';
+	}
+	else{
+		modal_content += 'This class has no attributes.<br>'
+	}
+	modal_content += '</div>';	
+	modal_content += '<div class="wizard-ref">';	
+	var references = entities[0].references;
+	if (references.length > 0){
+		modal_content += 'Select the references that you want to show in this page<br>';
+		modal_content += '<div id="id-left-entity-references">';				
+		for (var i = 0; i<references.length; i++){
+			modal_content += '<div class="checkbox">';
+			modal_content += '<label><input type="checkbox" value="'+references[i]+'">'+references[i]+'</label>';
+			modal_content += '</div>';
+		}
+		modal_content += '</div>';
+	}
+	else{
+		modal_content += 'This class has no references.<br>'
+	}
+	modal_content += '</div>';	
+	modal_content += '<button class="btn btn-danger btn-xs" onclick="remove_page(this);">-Remove</button></div>';
+	$('#id-page-container').append(modal_content);
+};
+
+function remove_page(elem){
+	$(elem).parent().remove();
+};
+
+function load_properties_in_wizard(elem){
+	var attr_container = $(elem).parent().parent().parent().find('.wizard-attr');
+	var ref_container = $(elem).parent().parent().parent().find('.wizard-ref');
+	var main_entity = $(elem).val();
+	var main = null;
+	var attr_content = '';
+	for (var i = 0, found = false; i<entities.length && !found; i++){
+		var entity = entities[i];
+		if (entity.name==main_entity){
+			main = entity;
+			found = true;			
+		}
+	}
+	var attributes = main.attributes;
+	if (attributes.length > 0){
+		attr_content += 'Select the attributes that you want to show in this page<br>';
+		attr_content += '<div id="id-left-entity-attributes">';			
+		for (var i = 0; i<attributes.length; i++){
+			attr_content += '<div class="checkbox">';
+			attr_content += '<label><input type="checkbox" value="'+attributes[i]+'">'+attributes[i]+'</label>';
+			attr_content += '</div>';
+		}		
+		attr_content += '</div>';
+	}
+	else{
+		attr_content += 'This class has no attributes.<br>'
+	}
+	attr_container.html(attr_content);
+	var ref_content = '';
+	var references = main.references;
+	if (references.length > 0){
+		ref_content += 'Select the references that you want to show in this page<br>';
+		ref_content += '<div id="id-left-entity-references">';		
+		
+		for (var i = 0; i<references.length; i++){
+			ref_content += '<div class="checkbox">';
+			ref_content += '<label><input type="checkbox" value="'+references[i]+'">'+references[i]+'</label>';
+			ref_content += '</div>';
+		}		
+		ref_content += '</div>';
+	}
+	else{
+		ref_content += 'This class has no references.<br>'
+	}
+	ref_container.html(ref_content);
+};
+
+function add_wizards_to_file(){
+	var indent = '<br>&emsp;&emsp;<span class="file-line">';
+	var line_class_close = '</span>';
+	var container = $('#id-file-interaction').find('.file-section-container');
+	var html = indent + 'Interaction elements {'+ line_class_close;	
+	$('#id-wizards-container').children().each(function(i, object){
+		var class_name = $(this).find('table').find('#id-left-entity').val();
+		html += indent + 'Wizard WizardForCreate'+class_name+' for context class '+class_name+' {'+ line_class_close;
+		var title = $(this).find('#id-wizard-name').val();
+		var description = $(this).find('#id-wizard-desc').val();
+		html += indent + 'title "' + title + '"'+ line_class_close;
+		html += indent + 'description "' + description + '"'+ line_class_close;
+		html += indent + 'type create'+ line_class_close;
+		html += indent + 'pages {'+ line_class_close;
+		$(this).find('#id-page-container').find('.page-container').each(function(i, object){
+			var tit = $(this).find('#id-wizard-page-name').val();
+			var desc = $(this).find('#id-wizard-page-desc').val();
+			html += indent + 'title "' + title + '"'+ line_class_close;
+			html += indent + 'description "' + description + '"'+ line_class_close;
+			html += indent + 'Attributes to show {' + line_class_close;
+			$(this).find('.wizard-attr').find("input:checkbox:checked").each(function(){
+				html += indent + '("'+$(this).val()+'", "'+$(this).val()+'", textField, "'+$(this).val()+'")' + line_class_close;
+			});
+			html += indent + '}'+ line_class_close;
+			html += indent + 'References to show {' + line_class_close;
+			$(this).find('.wizard-ref').find("input:checkbox:checked").each(function(){
+				html += indent + '("'+$(this).val()+'", "'+$(this).val()+'", textField, "'+$(this).val()+'")' + line_class_close;
+			});
+			html += indent + '}'+ line_class_close;
+			html += indent + 'Additional buttons{}' + line_class_close;			
+		});
+		html += indent + '}'+ line_class_close;
+		html += indent + 'default buttons true' + line_class_close;
+		html += indent + '}' + line_class_close;
+	});
+	html += indent + '}' + line_class_close;
+	html += indent + 'Statements {'+ line_class_close;
+	$('#id-wizards-container').children().each(function(i, object){
+		var class_name = $(this).find('table').find('#id-left-entity').val();
+		html += indent + 'Actions for type '+ class_name + '{' + line_class_close;
+		html += indent + 'on create do {' + line_class_close;
+		html += indent + 'show wizard WizardForCreate' + class_name+ line_class_close;
+		html += indent + '}' + line_class_close;
+	});		
+	html += indent + '}' + line_class_close;
+	container.html(html);
+	$('#id-modal-wizards').modal('toggle');
+	$('#id-button-download').removeAttr('disabled');
+};
